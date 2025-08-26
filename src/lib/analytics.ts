@@ -1,5 +1,5 @@
 // Google Analytics 4 configuration
-export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || "G-9N5P24LCGX";
+export const GA_TRACKING_ID = "G-9N5P24LCGX";
 
 // Initialize Google Analytics
 export const initGA = () => {
@@ -7,7 +7,7 @@ export const initGA = () => {
     // Load Google Analytics script
     const script = document.createElement("script");
     script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${G-9N5P24LCGX}`;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
     document.head.appendChild(script);
 
     // Initialize gtag
