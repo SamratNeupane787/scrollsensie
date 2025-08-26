@@ -7,8 +7,10 @@ function getCorsHeaders(origin?: string | null) {
   // Allow all origins for the tracking script to work on any website
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization, X-Requested-With",
+    "Access-Control-Allow-Credentials": "false",
     "Access-Control-Max-Age": "86400",
   };
 }

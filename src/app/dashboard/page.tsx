@@ -13,6 +13,7 @@ import {
   Legend,
 } from "chart.js";
 
+
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -122,7 +123,7 @@ export default function Dashboard() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
     if (error) alert(error.message);
