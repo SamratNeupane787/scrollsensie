@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll Tracking Test - Next.js</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 300vh; /* Make page tall enough to scroll */
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #581c87 50%,
+          #0f172a 100%
+        );
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        color: white;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        color: #94a3b8;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .milestone {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px;
+        margin: 40px 0;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .milestone::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .milestone:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .milestone:hover::before {
+        opacity: 1;
+      }
+
+      .milestone h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #e2e8f0;
+      }
+
+      .milestone p {
+        font-size: 1.1rem;
+        color: #94a3b8;
+      }
+
+      .milestone-25 {
+        border-left: 4px solid #3b82f6;
+      }
+      .milestone-50 {
+        border-left: 4px solid #8b5cf6;
+      }
+      .milestone-75 {
+        border-left: 4px solid #ec4899;
+      }
+      .milestone-100 {
+        border-left: 4px solid #10b981;
+      }
+
+      .progress-indicator {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #10b981);
+        width: 0%;
+        transition: width 0.1s ease;
+      }
+
+      .floating-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .floating-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.1);
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .floating-circle:nth-child(1) {
+        width: 200px;
+        height: 200px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .floating-circle:nth-child(2) {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        right: 10%;
+        background: rgba(139, 92, 246, 0.1);
+        animation-delay: 2s;
+      }
+
+      .floating-circle:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        left: 20%;
+        background: rgba(236, 72, 153, 0.1);
+        animation-delay: 4s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg);
+        }
+      }
+
+      .instructions {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 20px;
+        margin-top: 40px;
+        text-align: center;
+      }
+
+      .instructions h3 {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+        color: #e2e8f0;
+      }
+
+      .instructions p {
+        color: #94a3b8;
+        font-size: 1.1rem;
+      }
+
+      .status-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 12px 20px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #10b981;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-indicator">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="floating-elements">
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+    </div>
+
+    <div class="container">
+      <div class="header">
+        <h1>Scroll Tracking Test</h1>
+        <p>
+          Experience the power of real-time scroll analytics with our modern
+          Next.js platform
+        </p>
+      </div>
+
+      <div class="milestone milestone-25">
+        <h2>🚀 25% Scroll Milestone</h2>
+        <p>
+          You've reached the first quarter! The tracking system is now
+          monitoring your scroll behavior and sending data to our analytics
+          dashboard.
+        </p>
+      </div>
+
+      <div class="milestone milestone-50">
+        <h2>⚡ 50% Scroll Milestone</h2>
+        <p>
+          Halfway there! You're now in the middle of the page. Our lightweight
+          tracking script continues to capture your scroll depth without
+          impacting performance.
+        </p>
+      </div>
+
+      <div class="milestone milestone-75">
+        <h2>🎯 75% Scroll Milestone</h2>
+        <p>
+          Almost at the finish line! You're three-quarters through the page. The
+          analytics are being processed in real-time on our secure backend.
+        </p>
+      </div>
+
+      <div class="milestone milestone-100">
+        <h2>🏆 100% Scroll Milestone</h2>
+        <p>
+          Congratulations! You've reached the end of the page. Your complete
+          scroll journey has been tracked and analyzed. Check the dashboard to
+          see your data!
+        </p>
+      </div>
+
+      <div class="instructions">
+        <h3>How to Test</h3>
+        <p>
+          Scroll down to trigger tracking events. Open your browser's Network
+          tab to see the tracking requests being sent to the Next.js API.
+          Replace YOUR_TRACKER_ID in the script tag with your actual tracker ID
+          from the dashboard.
+        </p>
+      </div>
+    </div>
+
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span>Tracking Active</span>
+    </div>
+
+    <!-- Replace YOUR_TRACKER_ID with your actual tracker ID from the dashboard -->
+    <script
+      src="http://localhost:3000/api/tracker.js?id=YOUR_TRACKER_ID"
+      async
+    ></script>
+
+    <script>
+      // Progress bar animation
+      window.addEventListener("scroll", () => {
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.body.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        document.getElementById("progressBar").style.width =
+          scrollPercent + "%";
+      });
+    </script>
+  </body>
+</html>
