@@ -4,21 +4,9 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 // CORS helper function
 function getCorsHeaders(origin?: string | null) {
-  const allowedOrigins =
-    process.env.NODE_ENV === "production"
-      ? [
-          "https://yourdomain.com",
-          "https://www.yourdomain.com",
-          // Add your production domains here
-        ]
-      : ["*"];
-
+  // Allow all origins for the tracking script to work on any website
   return {
-    "Access-Control-Allow-Origin": allowedOrigins.includes("*")
-      ? "*"
-      : allowedOrigins.includes(origin)
-      ? origin
-      : allowedOrigins[0],
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
