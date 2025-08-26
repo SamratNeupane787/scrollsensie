@@ -66,8 +66,8 @@ export async function GET(request: NextRequest) {
           pageUrl: window.location.href,
           timestamp: currentTime,
           timeOnPage: timeOnPage,
-          // Include engagement data for milestone events and final events
-          ...(milestone !== undefined || isFinal ? {
+          // Always include engagement data for milestone events (25%, 50%, 75%, 100%)
+          ...(milestone !== undefined ? {
             totalTimeOnPage: timeOnPage,
             maxScrollDepth: maxDepth,
             scrollEvents: scrollEvents.length,
